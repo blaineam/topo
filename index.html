@@ -309,6 +309,12 @@
         border-radius: 16px;
         min-height: 50px;
         border: 1px solid var(--glass-border);
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 auto;
+        box-sizing: border-box;
+        text-align: center;
       }
 
       /* Typography */
@@ -501,6 +507,16 @@
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
         }
+      }
+      
+      .ss-caption-wrap {
+          bottom: 16px;
+          left: 16px;
+          width: calc(100% - 33px);
+      }
+      
+      .ss-caption {
+          border-radius: 22px;
       }
     </style>
   </head>
