@@ -118,50 +118,402 @@
     ></script>
 
     <style>
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --accent-primary: #3b82f6;
+        --accent-secondary: #60a5fa;
+        --glass-bg: rgba(30, 41, 59, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --card-hover-bg: rgba(59, 130, 246, 0.1);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg-primary: #f8fafc;
+          --bg-secondary: #e2e8f0;
+          --text-primary: #0f172a;
+          --text-secondary: #475569;
+          --accent-primary: #2563eb;
+          --accent-secondary: #3b82f6;
+          --glass-bg: rgba(255, 255, 255, 0.7);
+          --glass-border: rgba(0, 0, 0, 0.1);
+          --shadow-color: rgba(0, 0, 0, 0.1);
+          --card-hover-bg: rgba(37, 99, 235, 0.05);
+        }
+      }
+
+      * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
       .container-fluid {
         background-image: url(topo.svg?v=4);
         background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        will-change: scroll-position;
       }
-      .container-fluid .row {
-        background-color: rgba(50, 50, 50, 0.97);
-        border-radius: 25px;
+
+      /* Skip to content link for accessibility */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--accent-primary);
         color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 0 0 8px 0;
+        z-index: 9999;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      /* Glassmorphic navbar */
+      .navbar {
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
+        padding: 1rem 0;
+      }
+
+      .navbar-brand img {
+        height: 80px;
+        transition: transform 0.3s ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: scale(1.05);
+      }
+
+      .navbar-toggler {
+        border-color: var(--glass-border);
+        padding: 0.5rem;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: 0 0 0 2px var(--accent-primary);
+        outline: none;
+      }
+
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+
+      @media (prefers-color-scheme: light) {
+        .navbar-toggler-icon {
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        .navbar-brand img {
+          filter: brightness(0%);
+        }
+      }
+
+      .nav-link {
+        color: var(--text-primary) !important;
+        font-weight: 500;
+        padding: 0.5rem 1.5rem !important;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-link:hover,
+      .nav-link:focus {
+        background: var(--card-hover-bg);
+        transform: translateY(-2px);
+      }
+
+      .nav-link:focus {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+      }
+
+      /* Glassmorphic content sections */
+      .glass-section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
+        color: var(--text-primary);
         overflow: hidden;
         scroll-margin-top: 150px;
       }
+
+      /* Magazine-style grid */
+      #mapsGrid {
+        gap: 1.5rem;
+        justify-content: center;
+      }
+
+      #mapsGrid > div {
+        padding: 0 !important;
+      }
+
+      .about-content {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
+        padding: 3rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        .about-content {
+          padding: 2rem;
+          margin-top: 2rem;
+        }
+      }
+
+      /* Slideshow styling */
       .ss-slide-stage {
-        border-radius: 25px;
+        border-radius: 24px;
         height: 640px !important;
+        overflow: hidden;
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
       }
+
       .ss-caption {
-        background: rgba(50, 50, 50, 0.97);
-        color: white;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        color: var(--text-primary);
         text-shadow: none;
-        border-radius: 25px;
+        border-radius: 16px;
         min-height: 50px;
+        border: 1px solid var(--glass-border);
       }
-      .ss-caption-wrap {
-        padding: none;
+
+      /* Typography */
+      h1, h2, h3, h4 {
+        color: var(--text-primary);
+        font-weight: 700;
+        margin-bottom: 1rem;
       }
-      .navbar-brand img {
-        height: 120px;
+
+      h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      h2 {
+        font-size: 2rem;
+        color: var(--text-secondary);
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        color: var(--accent-primary);
+        margin-top: 1.5rem;
+      }
+
+      h4 {
+        font-size: 1.25rem;
+        color: var(--accent-secondary);
+        margin-top: 2rem;
+      }
+
+      p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+      }
+
+      /* Glassmorphic cards */
+      .card {
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 20px !important;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px 0 var(--shadow-color);
+        height: 100%;
+      }
+
+      .card:hover,
+      .card:focus-within {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+        border-color: var(--accent-primary) !important;
+      }
+
+      .card-img-top {
+        border-radius: 16px 16px 0 0;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover .card-img-top {
+        transform: scale(1.05);
+      }
+
+      .card-body {
+        padding: 1.25rem;
+      }
+
+      .card-text {
+        color: var(--text-primary) !important;
+        font-weight: 500;
+        font-size: 0.95rem;
       }
 
       a .card-text,
       a:hover .card-text,
       .card a:hover {
         text-decoration: none !important;
-        color: white;
+      }
+
+      .card a {
+        display: block;
+        text-decoration: none;
+      }
+
+      .card a:focus {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+        border-radius: 20px;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Loading animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+
+      /* Lazy loading */
+      img.lazy {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+
+      img.lazy:not([src]) {
+        background: var(--glass-bg);
+      }
+
+      img:not(.lazy) {
+        opacity: 1;
+      }
+
+      /* Responsive improvements */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .navbar-brand img {
+          height: 60px;
+        }
+
+        .ss-slide-stage {
+          height: 400px !important;
+        }
+      }
+
+      /* Focus visible for better keyboard navigation */
+      *:focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* Accessibility */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        :root {
+          --glass-bg: rgba(30, 41, 59, 0.95);
+        }
+
+        @media (prefers-color-scheme: light) {
+          :root {
+            --glass-bg: rgba(255, 255, 255, 0.95);
+          }
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container-fluid bg-dark pt-0 px-0 pb-5">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="container-fluid pt-0 px-0 pb-5">
       <nav
-        class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top compensate-for-scrollbar"
+        class="navbar navbar-expand-lg sticky-top compensate-for-scrollbar"
+        role="navigation"
+        aria-label="Main navigation"
       >
-        <a class="navbar-brand" href="#"
-          ><img class="img img-fluid ml-md-5" src="/logo.png?v=2"
+        <a class="navbar-brand" href="#" aria-label="J. R. Miller Topographic Map Collection Home"
+          ><img class="img img-fluid ml-md-5" src="/logo.png?v=2" alt="J. R. Miller Collection Logo"
         /></a>
         <button
           class="navbar-toggler"
@@ -170,80 +522,109 @@
           data-target="#navbarNavAltMarkup"
           aria-controls="navbarNavAltMarkup"
           aria-expanded="false"
-          aria-label="Toggle navigation"
+          aria-label="Toggle navigation menu"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ml-auto">
-            <a class="nav-item nav-link" href="#about">About</a>
-            <a class="nav-item nav-link" href="#maps">Maps</a>
+            <a class="nav-item nav-link" href="#about" aria-label="About section">About</a>
+            <a class="nav-item nav-link" href="#maps" aria-label="Maps gallery">Maps</a>
           </div>
         </div>
       </nav>
-      <div class="m-5 row align-items-center" id="about">
-        <div class="col-12 col-md-6 smoothslides p-0" id="slideshow">
-          <img src="profile.jpg" alt="James R. Miller" />
-          <img
-            src="maps/thumbs/California%20Hot%20Springs%201958.jpg"
-            alt="California Hot Springs 1958"
-          />
-          <img
-            src="maps/thumbs/Devils%20Postpile%20Calif%201943.jpg"
-            alt="Devils Postpile Calif 1943"
-          />
-          <img
-            src="maps/thumbs/Mount%20Whitney%20Calif%201956.jpg"
-            alt="Mount Whitney Calif 1956"
-          />
-          <img
-            src="maps/thumbs/Lone%20Pine%20Calif%201958.jpg"
-            alt="Lone Pine Calif 1958"
-          />
-          <img
-            src="maps/thumbs/Springville%20Calif%201957.jpg"
-            alt="Springville Calif 1957"
-          />
-          <img
-            src="maps/thumbs/Yosemite%20Calif%201956.jpg"
-            alt="Yosemite Calif 1956"
-          />
-        </div>
-        <div class="col-12 col-md-6 p-5">
-          <h1>James R. Miller's</h1>
-          <h2>Topographic Maps</h2>
-          <h3>Collected from the USGS from 1950-1970</h3>
-          <p>
-            My grandfather whom I never met loved to venture all over the
-            pacific west. He traveled almost everywhere in California and parts
-            of Oregon and a bit inland. He took his family including my dad on
-            almost every one of these trips.
-          </p>
-          <p>
-            His passions inspired my father's passions and mine as well. He
-            loved to photograph nature, much like I do too. He was a draftsman
-            by trade and was one of the best at it in his time. His handwriting
-            was so neatly conducted. He found how to collect these maps by
-            mailing a form in to the USGS in the 1950's.
-          </p>
-          <p>
-            My dad has held on to these maps and kept them in storage for years.
-            They have not seen the best of days but a 50 year old piece of paper
-            likely wouldn't. My grandfather used to take his drafting work to a
-            shop in downtown Bakersfield called Blueprint Services Co.
-          </p>
-          <p>
-            They are still in business and still family run. We decided to have
-            these scanned by the same shop this year in 2021 and it was so neat
-            to see they still have a booth for USGS maps inside. The staff was
-            super friendly and they did a phenomenal job putting these scans
-            together!
-          </p>
-          <h4>Please enjoy browsing my grandfather's Collection</h4>
-        </div>
-      </div>
-      <div class="mt-5 mx-5 row pt-5 px-5" id="maps">
+      <main id="main-content">
+        <section class="m-5" id="about" aria-labelledby="about-heading">
+          <div class="row align-items-center">
+            <div class="col-12 col-lg-6 p-3 smoothslides" id="slideshow" role="img" aria-label="Photo slideshow of James R. Miller and topographic maps">
+              <img src="profile.jpg" alt="Portrait of James R. Miller" />
+              <img
+                src="maps/thumbs/California%20Hot%20Springs%201958.jpg"
+                alt="Topographic map of California Hot Springs from 1958"
+              />
+              <img
+                src="maps/thumbs/Devils%20Postpile%20Calif%201943.jpg"
+                alt="Topographic map of Devils Postpile, California from 1943"
+              />
+              <img
+                src="maps/thumbs/Mount%20Whitney%20Calif%201956.jpg"
+                alt="Topographic map of Mount Whitney, California from 1956"
+              />
+              <img
+                src="maps/thumbs/Lone%20Pine%20Calif%201958.jpg"
+                alt="Topographic map of Lone Pine, California from 1958"
+              />
+              <img
+                src="maps/thumbs/Springville%20Calif%201957.jpg"
+                alt="Topographic map of Springville, California from 1957"
+              />
+              <img
+                src="maps/thumbs/Yosemite%20Calif%201956.jpg"
+                alt="Topographic map of Yosemite, California from 1956"
+              />
+            </div>
+            <div class="col-12 col-lg-6 p-3">
+              <div class="about-content">
+                <h1 id="about-heading">James R. Miller's</h1>
+                <h2>Topographic Maps</h2>
+                <h3>Collected from the USGS from 1950-1970</h3>
+                <p>
+                  My grandfather whom I never met loved to venture all over the
+                  pacific west. He traveled almost everywhere in California and parts
+                  of Oregon and a bit inland. He took his family including my dad on
+                  almost every one of these trips.
+                </p>
+                <p>
+                  His passions inspired my father's passions and mine as well. He
+                  loved to photograph nature, much like I do too. He was a draftsman
+                  by trade and was one of the best at it in his time. His handwriting
+                  was so neatly conducted. He found how to collect these maps by
+                  mailing a form in to the USGS in the 1950's.
+                </p>
+                <p>
+                  My dad has held on to these maps and kept them in storage for years.
+                  They have not seen the best of days but a 50 year old piece of paper
+                  likely wouldn't. My grandfather used to take his drafting work to a
+                  shop in downtown Bakersfield called Blueprint Services Co.
+                </p>
+                <p>
+                  They are still in business and still family run. We decided to have
+                  these scanned by the same shop this year in 2021 and it was so neat
+                  to see they still have a booth for USGS maps inside. The staff was
+                  super friendly and they did a phenomenal job putting these scans
+                  together!
+                </p>
+                <h4>Please enjoy browsing my grandfather's Collection</h4>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="mt-5 mx-5 glass-section pt-5 px-5 pb-5" id="maps" aria-labelledby="maps-heading">
+          <h2 id="maps-heading" class="sr-only">Map Gallery</h2>
+          <div class="row" id="mapsGrid">
         <script>
+          // Lazy load images using Intersection Observer
+          const lazyLoadImage = (img) => {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  const img = entry.target;
+                  img.src = img.dataset.src;
+                  img.onload = () => {
+                    img.classList.remove('lazy');
+                  };
+                  observer.unobserve(img);
+                }
+              });
+            }, {
+              rootMargin: '50px 0px',
+              threshold: 0.01
+            });
+
+            imageObserver.observe(img);
+          };
+
+          // Fetch and render maps
           fetch("maps.json")
             .then((response) => {
               if (!response.ok) {
@@ -252,23 +633,47 @@
               return response.json();
             })
             .then((maps) => {
-              maps.forEach((map) => {
-                document.getElementById(
-                  "maps"
-                ).innerHTML += `<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-5">
-                                    <div class="card text-white bg-dark">
-                                        <a data-fancybox="gallery" href="${map.relativePath}">
-                                            <img class="card-img-top" src="${map.relativeThumbnailPath}" alt="${map.name}">
-                                            <div class="card-body">
-                                                <p class="card-text">${map.name}</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>`;
+              const fragment = document.createDocumentFragment();
+              const grid = document.getElementById("mapsGrid");
+
+              maps.forEach((map, index) => {
+                const col = document.createElement('div');
+                col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-4';
+                col.style.animationDelay = `${index * 0.05}s`;
+
+                col.innerHTML = `
+                  <article class="card">
+                    <a data-fancybox="gallery"
+                       href="${map.relativePath}"
+                       aria-label="View ${map.name} topographic map">
+                      <img class="card-img-top lazy"
+                           data-src="${map.relativeThumbnailPath}"
+                           alt="Topographic map of ${map.name}"
+                           loading="lazy">
+                      <div class="card-body">
+                        <p class="card-text">${map.name}</p>
+                      </div>
+                    </a>
+                  </article>`;
+
+                fragment.appendChild(col);
               });
+
+              grid.appendChild(fragment);
+
+              // Setup lazy loading for all images
+              document.querySelectorAll('img.lazy').forEach(img => {
+                lazyLoadImage(img);
+              });
+            })
+            .catch(error => {
+              console.error('Error loading maps:', error);
+              document.getElementById("mapsGrid").innerHTML = '<p class="text-center w-100">Error loading maps. Please refresh the page.</p>';
             });
         </script>
-      </div>
+          </div>
+        </section>
+      </main>
     </div>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"
