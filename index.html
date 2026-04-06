@@ -49,6 +49,7 @@
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Primary Meta Tags -->
     <title>J. R. Miller Topographic Map Collection</title>
@@ -616,6 +617,10 @@
             imageObserver.observe(img);
           };
 
+          // Validate that a path is a safe relative URL (no javascript:, data:, etc.)
+          const isSafePath = (path) =>
+            typeof path === 'string' && /^maps\//.test(path);
+
           // Fetch and render maps
           fetch("maps.json")
             .then((response) => {
@@ -625,10 +630,17 @@
               return response.json();
             })
             .then((maps) => {
+              if (!Array.isArray(maps)) {
+                throw new Error('Invalid maps data');
+              }
               const fragment = document.createDocumentFragment();
               const grid = document.getElementById("mapsGrid");
 
               maps.forEach((map, index) => {
+                if (!isSafePath(map.relativePath) || !isSafePath(map.relativeThumbnailPath)) {
+                  return;
+                }
+
                 const col = document.createElement('div');
                 col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-4';
                 col.style.animationDelay = `${index * 0.05}s`;
@@ -684,8 +696,8 @@
       </main>
     </div>
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"
-      integrity="sha512-DUC8yqWf7ez3JD1jszxCWSVB0DMP78eOyBpMa5aJki1bIRARykviOuImIczkxlj1KhVSyS16w2FSQetkD4UU2w=="
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
@@ -700,9 +712,8 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      var jQ = $.noConflict(true);
-      jQ(window).load(function () {
-        jQ("#slideshow").smoothSlides({
+      jQuery(function () {
+        jQuery("#slideshow").smoothSlides({
           effect:
             "zoomIn,zoomOut,panUp,panDown,diagTopLeftToBottomRight,diagTopRightToBottomLeft,diagBottomRightToTopLeft,diagBottomLeftToTopRight",
           effectDuration: 15000,
@@ -713,11 +724,6 @@
         });
       });
     </script>
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
       integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
