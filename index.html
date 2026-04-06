@@ -1,31 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- // <?php
-//
-// $siteUrl = "https://$_SERVER[HTTP_HOST]";
-//
-// $largeMapFolder = __DIR__ . "/maps/large";
-// $mapThumbFolder = __DIR__ . "/maps/thumbs";
-//
-// $largeMaps = glob($largeMapFolder . "/*.jpg");
-//
-// $maps = array_map(function ($largeMap) use ($largeMapFolder, $mapThumbFolder) {
-//   if (!is_file($mapThumbFolder . "/" . basename($largeMap))) {
-//     return null;
-//   }
-//
-//   return [
-//     "name" => str_replace(".jpg", "", basename($largeMap)),
-//     "filename" => basename($largeMap),
-//     "relativePath" =>
-//       str_replace(__DIR__, "", $largeMapFolder) . "/" . basename($largeMap),
-//     "relativeThumbnailPath" =>
-//       str_replace(__DIR__, "", $mapThumbFolder) . "/" . basename($largeMap),
-//   ];
-// }, $largeMaps);
-// //die(json_encode($maps));
-//
-?> -->
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,13 +12,15 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"
+      integrity="sha384-Q8BgkilbsFGYNNiDqJm69hvDS7NCJWOodvfK/cwTyQD4VQA0qKzuPpvqNER1UC0F"
+      crossorigin="anonymous"
     />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/kthornbloom/Smoothslides@master/css/smoothslides.theme.css"
+      integrity="sha384-+87LvFuhtcNMBUzgAgLGLczG9JJl6+DOP0a3fbDaWJ8tuWvwPHXUTJbpMo1Y4re1"
+      crossorigin="anonymous"
     />
-
-    <title>J. R. Miller Topographic Map Collection</title>
 
     <link
       rel="apple-touch-icon"
@@ -84,7 +60,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="<?= $siteUrl ?>" />
+    <meta property="og:url" content="https://topo.wemiller.com" />
     <meta
       property="og:title"
       content="J. R. Miller Topographic Map Collection"
@@ -97,7 +73,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="<?= $siteUrl ?>" />
+    <meta property="twitter:url" content="https://topo.wemiller.com" />
     <meta
       property="twitter:title"
       content="J. R. Miller Topographic Map Collection"
@@ -110,7 +86,7 @@
 
     <script
       data-host="https://analytics.wemiller.com"
-      data-dnt="false"
+      data-dnt="true"
       src="https://analytics.wemiller.com/js/script.js"
       id="ZwSg9rf6GA"
       async
@@ -657,21 +633,32 @@
                 col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-4';
                 col.style.animationDelay = `${index * 0.05}s`;
 
-                col.innerHTML = `
-                  <article class="card">
-                    <a data-fancybox="gallery"
-                       href="${map.relativePath}"
-                       aria-label="View ${map.name} topographic map">
-                      <img class="card-img-top lazy"
-                           data-src="${map.relativeThumbnailPath}"
-                           alt="Topographic map of ${map.name}"
-                           loading="lazy">
-                      <div class="card-body">
-                        <p class="card-text">${map.name}</p>
-                      </div>
-                    </a>
-                  </article>`;
+                const article = document.createElement('article');
+                article.className = 'card';
 
+                const link = document.createElement('a');
+                link.setAttribute('data-fancybox', 'gallery');
+                link.href = map.relativePath;
+                link.setAttribute('aria-label', 'View ' + map.name + ' topographic map');
+
+                const img = document.createElement('img');
+                img.className = 'card-img-top lazy';
+                img.dataset.src = map.relativeThumbnailPath;
+                img.alt = 'Topographic map of ' + map.name;
+                img.loading = 'lazy';
+
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body';
+
+                const cardText = document.createElement('p');
+                cardText.className = 'card-text';
+                cardText.textContent = map.name;
+
+                cardBody.appendChild(cardText);
+                link.appendChild(img);
+                link.appendChild(cardBody);
+                article.appendChild(link);
+                col.appendChild(article);
                 fragment.appendChild(col);
               });
 
@@ -684,7 +671,12 @@
             })
             .catch(error => {
               console.error('Error loading maps:', error);
-              document.getElementById("mapsGrid").innerHTML = '<p class="text-center w-100">Error loading maps. Please refresh the page.</p>';
+              const errorEl = document.createElement('p');
+              errorEl.className = 'text-center w-100';
+              errorEl.textContent = 'Error loading maps. Please refresh the page.';
+              const grid = document.getElementById("mapsGrid");
+              grid.textContent = '';
+              grid.appendChild(errorEl);
             });
         </script>
           </div>
@@ -697,8 +689,16 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/kthornbloom/Smoothslides@master/js/smoothslides-2.1.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"
+      integrity="sha384-Zm+UU4tdcfAm29vg+MTbfu//q5B/lInMbMCr4T8c9rQFyOv6PlfQYpB5wItcXWe7"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/kthornbloom/Smoothslides@master/js/smoothslides-2.1.0.min.js"
+      integrity="sha384-XTx4mJuSRFUzQgaFP01QuqTWZBFGbBdX+aHzccmelkQ+NE43VLDF12p1d+Vn9BVd"
+      crossorigin="anonymous"
+    ></script>
     <script>
       var jQ = $.noConflict(true);
       jQ(window).load(function () {
